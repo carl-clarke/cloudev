@@ -65,7 +65,7 @@ RUN curl -L "https://github.com/docker/compose/releases/download/${DOCKER_COMPOS
 # 2: Install basic apps and services.
 # -----------------------------------------------------------------------------
 RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
-RUN apt-get -y install \
+RUN apt update && apt-get -y install \
     # docker-compose # installed above\
     git \
     openssh-server \

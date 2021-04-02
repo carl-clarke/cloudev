@@ -4,7 +4,7 @@ SSH_DIR=/home/dev/.ssh
 
 # Create symlink to cloud-drive in user's home directory.
 if [ ! -f /home/dev/cloud-drive ]; then
-  ln -s /mnt/cloud-drive /home/dev/cloud-drive
+  ln -s /mnt/cloud-drive /home/dev/
 fi
 
 # Lazy-add ssh keys only the first time container is run.
