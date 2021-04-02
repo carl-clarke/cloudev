@@ -46,7 +46,8 @@ PORT_SSH_START=22000
 PORT_SSH_END=22999
 IMAGE=cloud-dev:latest
 USER_NAME=$ARG_USER
-CONTAINER_NAME=$ARG_USER.$ARG_NAME
+CONTAINER_ID=$ARG_NAME
+CONTAINER_NAME=$USER_NAME.$CONTAINER_ID
 EFS_USERS=/mnt/efs/fs1/users
 USER_KEYS_DIRNAME=keys
 USER_DATA_DIRNAME=data
@@ -120,6 +121,8 @@ if [ ! "$(docker ps -a -q -f name=$CONTAINER_NAME)" ]; then
     -p $SSH_PORT:22 \
     -v $EFS_USERS/$USER_NAME/data:/mnt/cloud-drive \
     -v $CONTAINER_NAME:/home/dev \
+    -l cloudev.user=$USER_NAME \
+    -l cloudev.name=$CONTAINER_ID \
     $IMAGE \
     1> /dev/null
 
