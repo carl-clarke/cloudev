@@ -1,0 +1,44 @@
+{
+  "name": "cloudev-agent",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "shelljs": "^0.8.4"
+  },
+  "devDependencies": {
+    "@types/node": "^14.14.7",
+    "@types/shelljs": "^0.8.8",
+    "@types/webpack": "^4.41.25",
+    "@types/webpack-dev-server": "^3.11.1",
+    "@typescript-eslint/eslint-plugin": "^4.20.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^4.20.0",
+    "@typescript-eslint/parser": "^4.20.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "cross-env": "^7.0.2",
+    "eslint": "^7.23.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsdoc": "^32.3.0",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-react": "^7.23.1",
+    "nodemon": "^2.0.7",
+    "npm-run-all": "^4.1.5",
+    "ts-loader": "^8.0.2",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.1.2",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-middleware": "^4.1.0"
+  },
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack",
+    "dev": "run-p dev:build dev:mon",
+    "dev:build": "cross-env NODE_ENV=development webpack -d -w --hot",
+    "dev:mon": "node -e \"setTimeout(()=>{}, 5000)\" && nodemon --ignore src/ bin/agent.js -- --dev --config dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

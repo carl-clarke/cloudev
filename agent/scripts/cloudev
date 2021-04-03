@@ -44,7 +44,7 @@ fi
 # -----------------------------------------------------------------------------
 PORT_SSH_START=22000
 PORT_SSH_END=22999
-IMAGE=cloud-dev:latest
+IMAGE=cloudev:latest
 USER_NAME=$ARG_USER
 CONTAINER_ID=$ARG_NAME
 CONTAINER_NAME=$USER_NAME.$CONTAINER_ID
