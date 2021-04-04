@@ -1,44 +1,36 @@
-import { psCommand } from '@/modules/commands/ps';
 import express from 'express';
-// import webpack from 'webpack';
-// const config = require('@/../webpack.config');
-// const webpackDevMiddleware = require('webpack-dev-middleware');
+import { Command, createCommand, psCommand } from './modules/command';
+import { logError } from './modules/core';
 
-// const compiler = webpack(config);
 const app = express();
 const port = 2020;
 
 // ----------------------------------------------------------------------------
 // Middleware
 // ----------------------------------------------------------------------------
-
-// Tell express to use the webpack-dev-middleware and use the webpack.config.js
-// configuration file as a base.
-// app.use(
-//   webpackDevMiddleware(compiler, {
-//     publicPath: config.output.publicPath,
-//   })
-// );
-
 app.use(express.json({}));
 
 // ----------------------------------------------------------------------------
 // Routes
 // ----------------------------------------------------------------------------
 app.post('/', async (req, res) => {
-  const { command, args, payload } = req.body;
+  const { command, args = {}, payload = {} } = req.body;
   const context = {
-    username: 'cclarke'
+    username: 'cclarke',
+    config: require('../assets/config.json')
   };
 
   let result: {};
   
   switch (command) {
-    case 'ps':
+    case Command.PS:
       result = await psCommand(context, args, payload);
       break;
+    case Command.Create:
+      result = await createCommand(context, args, payload);
+      break;
     default:
-      console.error(`[Agent] unknown command ${command}`)
+      logError(`[cloudev] unknown command ${command}`)
   }
 
   res.json(result);

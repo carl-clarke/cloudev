@@ -1,0 +1,12 @@
+{
+  "IMAGE": "cloudev:latest",
+  "HOST_SSH_PORT_START": 22000,
+  "HOST_SSH_PORT_END": 22999,
+  "HOST_USERS_DIR_PATH": "/mnt/efs/fs1/users",
+  "USER_KEYS_DIR_NAME": "keys",
+  "USER_DATA_DIR_NAME": "data",
+  "USER_KEY_NAME": "id_rsa",
+  "CONTAINER_SSHD_PORT": 22,
+  "CONTAINER_USER_DATA_MOUNT_PATH": "/home/dev",
+  "CONTAINER_CLOUD_DRIVE_MOUNT_PATH":"/home/dev/cloud-drive"
+}
