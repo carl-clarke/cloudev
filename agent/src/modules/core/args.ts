@@ -22,7 +22,7 @@ export function validateArgs(args: Lookup, supported: Lookup<'*'|string[]>) {
       const hasUnsafeChars = !/^[a-zA-Z0-9]+(?:\-[a-zA-Z0-9])*$/g.test(value);
       const hasOutOfBoundsValue = isEmptyEnum && value !== null || !isEmptyEnum && !supportsAnyValue && value !== null && !supportedValue.includes(value);
 
-      console.log({hasOutOfBoundsValue, isEmptyEnum})
+      // console.log({hasOutOfBoundsValue, isEmptyEnum})
       return hasUnsafeChars || hasOutOfBoundsValue;
     });
 

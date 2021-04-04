@@ -1,4 +1,4 @@
-import { Context, execAsync, log, Lookup, serializeArgs, validateArgs } from '@/modules/core';
+import { ContainerMetadata, Context, execAsync, log, Lookup, serializeArgs, validateArgs } from '@/modules/core';
 import { promises as fs } from 'fs';
 import getPort from 'get-port';
 import path from 'path';
@@ -81,8 +81,9 @@ export async function createCommand(context: Context, args: Lookup, payload: Loo
         -p ${sshBindPort}:${CONTAINER_SSHD_PORT} \
         -v "${userDataDirPath}":"${CONTAINER_CLOUD_DRIVE_MOUNT_PATH}" \
         -v ${containerId}:"${CONTAINER_USER_DATA_MOUNT_PATH}" \
-        -l cloudev.user=${username} \
-        -l cloudev.name=${containerName} \
+        -l ${ContainerMetadata.User}=${username} \
+        -l ${ContainerMetadata.Name}=${containerName} \
+        -l ${ContainerMetadata.Port}=${sshBindPort} \
         ${IMAGE} \
         1> /dev/null
     `);

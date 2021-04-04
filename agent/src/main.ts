@@ -25,7 +25,7 @@ app.post('/', async (req, res) => {
     errors: [] as string[],
     data: null as unknown
   };
-  
+
   try {
     switch (command) {
       case Command.ProcessStatus:

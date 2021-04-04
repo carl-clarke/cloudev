@@ -9,28 +9,47 @@ export async function psCommand(context: Context, args: Lookup, payload: Lookup)
 
   // Validate before going any further.
   validateArgs(args, SUPPORTED_ARGS);
-  
+
   const { username } = context;
   const serialArgs = serializeArgs(args);
   const command = `docker ps ${serialArgs} \
     --filter 'label=${ContainerMetadata.User}=${username}' \
-    --format '{{.Label "${ContainerMetadata.Name}"}}|{{.State}}|{{.RunningFor}}|{{.Image}}'`;
+    --format '{{.Label "${ContainerMetadata.Name}"}}|{{.State}}|{{.RunningFor}}|{{.Image}}|{{.Label "${ContainerMetadata.Port}"}}'`;
 
   const raw = await execAsync(command);
 
-  const result = raw
+  const results = raw
     .split('\n')
-    .filter(p=> p.trim().length > 0)
+    .filter(p => p.trim().length > 0)
     .map(p => {
-      const [name, state, uptime, image] = p.split('|');
+      const [name, state, uptime, image, port] = p.split('|');
 
       return {
         name,
         state,
         uptime,
-        image
+        image,
+        port,
+        memory: {
+          usage: '',
+          percentage: ''
+        },
       }
     });
 
-  return result;
+  for (const item of results.filter(p => p.state === 'running')) {
+    const rawStats = await execAsync(`docker stats ${username}.${item.name} --no-stream --format '{{.MemUsage}}|{{.MemPerc}}'`);
+    const stats = rawStats
+      .split('\n')
+      .filter(p => p.trim().length > 0)
+      .reduce((_result, p) => {
+        const [usage, percentage] = p.split('|');
+
+        return { usage, percentage };
+      }, {} as { usage: string; percentage: string; });
+    
+    item.memory = stats
+  }
+
+  return results;
 }
