@@ -4,6 +4,7 @@
     "oclif-typescript"
   ],
   "rules": {
-    "semi": [1, "always"]
+    "semi": [1, "always"],
+    "object-curly-spacing": [1, "always"]
   }
 }

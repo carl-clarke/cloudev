@@ -7,8 +7,8 @@ const SUPPORTED_PAYLOAD = {
   name: '*' as '*'
 };
 
-export async function startCommand(context: Context, args: Lookup, payload: Lookup) {
-  log('[start] invoked with args', args);
+export async function stopCommand(context: Context, args: Lookup, payload: Lookup) {
+  log('[stop] invoked with args', args);
 
   // Validate before going any further.
   validateArgs(args, SUPPORTED_ARGS);
@@ -17,10 +17,10 @@ export async function startCommand(context: Context, args: Lookup, payload: Look
   const { username } = context;
   const containerId = `${username}.${payload.name}`;
   const serialArgs = serializeArgs(args);
-  const command = `docker start ${serialArgs} ${containerId}`;
+  const command = `docker stop ${serialArgs} ${containerId}`;
   const raw = await execAsync(command);
 
   if (raw.trim() !== containerId) {
-    throw new Error('Container did not start.')
+    throw new Error('Container did not stop.')
   }
 }

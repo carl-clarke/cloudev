@@ -1,11 +1,17 @@
 import fetch from 'node-fetch';
 
 type AgentResponse<T> = {
+  success: boolean;
   errors: string[];
   data: T;
 };
 
-type AgentContainer = {
+type AgentOpCreate = {
+  key: string;
+  port: number;
+};
+
+type AgentOpList = {
   name: string;
   state: AgentContainerState;
   uptime: string;
@@ -15,11 +21,12 @@ type AgentContainer = {
     usage: string;
     percentage: string;
   };
-};
+}[];
 
 export enum AgentContainerState {
   Created = 'created',
-  Running = 'running'
+  Running = 'running',
+  Exited = 'exited',
 }
 
 const AGENT_ENDPOINT = 'http://localhost:2020';
@@ -33,12 +40,56 @@ const api = async <R>(payload: {}) => (await fetch(AGENT_ENDPOINT, {
 })).json() as Promise<AgentResponse<R>>;
 
 export async function list() {
-  const result = await api<AgentContainer[]>({
-    command: 'ps',
+  const result = await api<AgentOpList>({
+    command: 'list',
     args: {
       '-a': null,
     },
   });
 
-  return result.data;
+  return result;
+}
+
+export async function start(name: string) {
+  const result = await api<AgentResponse<never>>({
+    command: 'start',
+    payload: {
+      name,
+    },
+  });
+
+  return result;
+}
+
+export async function stop(name: string) {
+  const result = await api<AgentResponse<never>>({
+    command: 'stop',
+    payload: {
+      name,
+    },
+  });
+
+  return result;
+}
+
+export async function remove(name: string) {
+  const result = await api<AgentResponse<never>>({
+    command: 'remove',
+    payload: {
+      name,
+    },
+  });
+
+  return result;
+}
+
+export async function create(name: string) {
+  const result = await api<AgentOpCreate>({
+    command: 'create',
+    payload: {
+      name,
+    },
+  });
+
+  return result;
 }

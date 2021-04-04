@@ -1,14 +1,14 @@
 import { Command, flags } from '@oclif/command';
 import cli from 'cli-ux';
-import { start } from '../services/agent';
+import { stop } from '../services/agent';
 
 export default class Start extends Command {
-  static description = 'Start a previously stopped workspace.'
+  static description = 'Stop an active workspace. Can be restarted later to pickup where you left off.'
 
   static aliases = [];
 
   static examples = [
-    `$ cloudev start <name>
+    `$ cloudev stop <name>
 `,
   ];
 
@@ -22,9 +22,9 @@ export default class Start extends Command {
   async run() {
     const { args } = this.parse(Start);
 
-    cli.action.start('Starting');
+    cli.action.start('Stopping');
 
-    const { success } = await start(args.name);
+    const { success } = await stop(args.name);
 
     cli.action.stop(`${success ? '✔️ done!' : '❌ failed'}`);
   }

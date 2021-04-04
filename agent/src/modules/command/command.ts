@@ -1,5 +1,7 @@
 export enum Command {
-  ProcessStatus = 'ps',
+  List = 'list',
   Create = 'create',
-  Remove = 'rm',
+  Remove = 'remove',
+  Start = 'start',
+  Stop = 'stop'
 }

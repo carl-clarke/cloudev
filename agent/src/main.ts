@@ -1,5 +1,5 @@
 import express from 'express';
-import { Command, createCommand, psCommand } from './modules/command';
+import { Command, createCommand, psCommand, startCommand, stopCommand } from './modules/command';
 import { rmCommand } from './modules/command/rm';
 import { logError } from './modules/core';
 
@@ -23,25 +23,33 @@ app.post('/', async (req, res) => {
 
   let result = {
     errors: [] as string[],
-    data: null as unknown
+    data: null as unknown,
+    success: true
   };
 
   try {
     switch (command) {
-      case Command.ProcessStatus:
+      case Command.List:
         result.data = await psCommand(context, args, payload);
         break;
-        case Command.Create:
-          result.data = await createCommand(context, args, payload);
+      case Command.Create:
+        result.data = await createCommand(context, args, payload);
         break;
-        case Command.Remove:
-          result.data = await rmCommand(context, args, payload);
-          break;
+      case Command.Remove:
+        await rmCommand(context, args, payload);
+        break;
+      case Command.Start:
+        await startCommand(context, args, payload);
+        break;
+      case Command.Stop:
+        await stopCommand(context, args, payload);
+        break;
       default:
         logError(`[cloudev] unknown command ${command}`)
     }
   }
   catch (e) {
+    result.success = false;
     result.errors.push(e.toString());
   }
 

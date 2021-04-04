@@ -15,11 +15,12 @@ export async function rmCommand(context: Context, args: Lookup, payload: Lookup)
   validateArgs(payload, SUPPORTED_PAYLOAD);
 
   const { username } = context;
+  const containerId = `${username}.${payload.name}`;
   const serialArgs = serializeArgs(args);
-  const command = `docker rm -f ${serialArgs} ${username}.${payload.name}`;
+  const command = `docker rm -f ${serialArgs} ${containerId}`;
   const raw = await execAsync(command);
 
-  return {
-    success: raw !== ''
-  };
+  if (raw.trim() !== containerId) {
+    throw new Error('Container did not stop.')
+  }
 }

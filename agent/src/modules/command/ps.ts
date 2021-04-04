@@ -29,7 +29,7 @@ export async function psCommand(context: Context, args: Lookup, payload: Lookup)
         state,
         uptime,
         image,
-        port,
+        port: Number.parseInt(port, 10),
         memory: {
           usage: '',
           percentage: ''
