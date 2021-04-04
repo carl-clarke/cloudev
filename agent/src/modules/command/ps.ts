@@ -1,10 +1,18 @@
-import { ContainerMetadata, Context, execAsync, log, Lookup, sanitizeArgs } from '@/modules/core';
+import { ContainerMetadata, Context, execAsync, log, Lookup, serializeArgs, validateArgs } from '@/modules/core';
+
+const SUPPORTED_ARGS = {
+  '-a': []
+};
 
 export async function psCommand(context: Context, args: Lookup, payload: Lookup) {
-  log('[Command:PS] invoked with args', args);
+  log('[ps] invoked with args', args);
+
+  // Validate before going any further.
+  validateArgs(args, SUPPORTED_ARGS);
+  
   const { username } = context;
-  const safeArgs = sanitizeArgs(args);
-  const command = `docker ps ${safeArgs} \
+  const serialArgs = serializeArgs(args);
+  const command = `docker ps ${serialArgs} \
     --filter 'label=${ContainerMetadata.User}=${username}' \
     --format '{{.Label "${ContainerMetadata.Name}"}}|{{.State}}|{{.RunningFor}}|{{.Image}}'`;
 

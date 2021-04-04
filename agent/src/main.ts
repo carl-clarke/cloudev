@@ -1,5 +1,6 @@
 import express from 'express';
 import { Command, createCommand, psCommand } from './modules/command';
+import { rmCommand } from './modules/command/rm';
 import { logError } from './modules/core';
 
 const app = express();
@@ -20,17 +21,28 @@ app.post('/', async (req, res) => {
     config: require('../assets/config.json')
   };
 
-  let result: {};
+  let result = {
+    errors: [] as string[],
+    data: null as unknown
+  };
   
-  switch (command) {
-    case Command.PS:
-      result = await psCommand(context, args, payload);
-      break;
-    case Command.Create:
-      result = await createCommand(context, args, payload);
-      break;
-    default:
-      logError(`[cloudev] unknown command ${command}`)
+  try {
+    switch (command) {
+      case Command.ProcessStatus:
+        result.data = await psCommand(context, args, payload);
+        break;
+        case Command.Create:
+          result.data = await createCommand(context, args, payload);
+        break;
+        case Command.Remove:
+          result.data = await rmCommand(context, args, payload);
+          break;
+      default:
+        logError(`[cloudev] unknown command ${command}`)
+    }
+  }
+  catch (e) {
+    result.errors.push(e.toString());
   }
 
   res.json(result);

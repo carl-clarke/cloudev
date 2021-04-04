@@ -1,13 +1,20 @@
-import { Context, execAsync, log, Lookup, sanitizeArgs } from '@/modules/core';
+import { Context, execAsync, log, Lookup, serializeArgs, validateArgs } from '@/modules/core';
 import { promises as fs } from 'fs';
 import getPort from 'get-port';
 import path from 'path';
 import { chmod, mkdir } from 'shelljs';
 
+const SUPPORTED_ARGS = {
+};
+
 export async function createCommand(context: Context, args: Lookup, payload: Lookup) {
   log('[Command:PS] invoked with args', args);
+
+  // Validate before going any further.
+  validateArgs(args, SUPPORTED_ARGS);
+
   const { username, config } = context;
-  const safeArgs = sanitizeArgs(args);
+  const serialArgs = serializeArgs(args);
   const {
     IMAGE,
     HOST_USERS_DIR_PATH,
@@ -36,36 +43,29 @@ export async function createCommand(context: Context, args: Lookup, payload: Loo
   if (!await fs.stat(userDataDirPath)) {
     mkdir('-p', userDataDirPath);
     chmod('', '777', userDataDirPath);
-    log(`  ✔️ Created ${username}/${USER_DATA_DIR_NAME}`)
+    log(`✔️ Created ${username}/${USER_DATA_DIR_NAME}`)
   }
 
   // Make user's "keys" directory if it doesn't exist.
   if (!await fs.stat(userKeysDirPath)) {
     mkdir('-p', userKeysDirPath);
-    log(`  ✔️ Created ${username}/${USER_KEYS_DIR_NAME}`);
+    log(`✔️ Created ${username}/${USER_KEYS_DIR_NAME}`);
   }
 
   // Generate keys
   if (!fs.stat(sshPrivateKeyPath)) {
     await execAsync(`ssh - keygen - q - t rsa - b 4096 - P "" - f ${sshPrivateKeyPath}`);
-    log(`  ✔️ Generated new key ${USER_KEYS_DIR_NAME}/${USER_KEY_NAME}`)
+    log(`✔️ Generated new key ${USER_KEYS_DIR_NAME}/${USER_KEY_NAME}`)
   }
 
   // Must be initialized after keys are generated.
   const sshPubKeyValue = (await fs.readFile(sshPubKeyPath)).toString();
   const sshPrivateKeyValue = (await fs.readFile(sshPrivateKeyPath)).toString();
-
-  console.log({
-    containerId, sshBindPort,
-    userDataDirPath, userKeysDirPath, sshPrivateKeyPath, sshPubKeyPath,
-    // sshPrivateKeyValue,
-    // sshPubKeyValue
-  })
   
   if (await execAsync(`docker volume ls -f 'name=${containerId}' --format '{{.Name}}'`) === '') {
-    log('  Creating volume...')
+    log('Creating volume...')
     await execAsync(`docker volume create ${containerId} 1> /dev/null`);
-    log("  ✔️ Created new volume");
+    log("✔️ Created new volume");
   }
 
   if (await execAsync(`docker ps -a -q -f 'name=${containerId}' --format '{{.Names}}'`) === '') {
@@ -86,10 +86,10 @@ export async function createCommand(context: Context, args: Lookup, payload: Loo
         ${IMAGE} \
         1> /dev/null
     `);
-    log(`  ✔️ Container started at port ${sshBindPort}`);
+    log(`✔️ Container started at port ${sshBindPort}`);
   }
   else {
-    log("  ❌ Container already exists! Aborting to prevent data-loss.");
+    log("❌ Container already exists! Aborting to prevent data-loss.");
     throw new Error(`Container with name "${containerName}" already exists.`);
   }
 
