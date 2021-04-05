@@ -1,4 +1,5 @@
 import { Command, flags } from '@oclif/command';
+import chalk from 'chalk';
 import cli from 'cli-ux';
 import { stop } from '../services/agent';
 
@@ -26,6 +27,6 @@ export default class Start extends Command {
 
     const { success } = await stop(args.name);
 
-    cli.action.stop(`${success ? '✔️ done!' : '❌ failed'}`);
+    cli.action.stop(`${success ? chalk.greenBright('done') : chalk.red('failed')}`);
   }
 }

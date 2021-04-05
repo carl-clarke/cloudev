@@ -26,6 +26,6 @@ export default class Start extends Command {
 
     const { success } = await start(args.name);
 
-    cli.action.stop(`${success ? '✔️ done!' : '❌ failed'}`);
+    cli.action.stop(`${success ? '✔️ done' : '❌ failed'}`);
   }
 }

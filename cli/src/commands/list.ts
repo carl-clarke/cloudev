@@ -1,7 +1,7 @@
 import { Command, flags } from '@oclif/command';
+import chalk from 'chalk';
 import cli from 'cli-ux';
 import { AgentContainerState, list } from '../services/agent';
-
 export default class List extends Command {
   static description = 'List all your DEV workspaces'
 
@@ -24,13 +24,15 @@ export default class List extends Command {
 
     const { success, data: results } = await list();
 
-    cli.action.stop(`${success ? '✔️ done!' : '❌ failed'}`);
+    cli.action.stop(`${success ? chalk.greenBright('done') : chalk.red('failed')}`);
 
-    results.forEach(p => {
+    results
+    .sort((a, b) => a.state === AgentContainerState.Running ? -1 : 1)
+    .forEach(p => {
       const isRunning = p.state === AgentContainerState.Running;
       const { usage, percentage } = p.memory;
 
-      this.log(`${isRunning ? '🟢' : '⭕'} ${p.name}\t${p.state}${usage && `\t${usage} (${percentage})`}`);
+      this.log(`${isRunning ? '🟢' : '⭕'} ${p.name}\t${isRunning ? 'Online' : 'Offline'}\t${usage && `\t${usage} (${percentage})`}`);
     });
   }
 }
