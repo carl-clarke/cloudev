@@ -8,5 +8,7 @@
   "USER_KEY_NAME": "id_rsa",
   "CONTAINER_SSHD_PORT": 22,
   "CONTAINER_USER_DATA_MOUNT_PATH": "/home/dev",
-  "CONTAINER_CLOUD_DRIVE_MOUNT_PATH":"/home/dev/cloud-drive"
+  "CONTAINER_CLOUD_DRIVE_MOUNT_PATH":"/home/dev/cloud-drive",
+  "AUTH_TENANT_ID": "ecf6722d-eb6e-4b58-a13e-12610c2a9c18",
+  "AUTH_APP_ID": "f93f3fa9-56fe-4ca0-ac5e-32f0fa90877b"
 }

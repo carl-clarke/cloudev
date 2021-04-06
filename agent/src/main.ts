@@ -1,7 +1,8 @@
 import express from 'express';
+import jwtDecode from 'jwt-decode';
 import { Command, createCommand, psCommand, startCommand, stopCommand } from './modules/command';
 import { rmCommand } from './modules/command/rm';
-import { logError } from './modules/core';
+import { Config, Context, logError, UserIdentity, validateAccess } from './modules/core';
 
 const app = express();
 const port = 2020;
@@ -16,9 +17,15 @@ app.use(express.json({}));
 // ----------------------------------------------------------------------------
 app.post('/', async (req, res) => {
   const { command, args = {}, payload = {} } = req.body;
-  const context = {
-    username: 'cclarke',
-    config: require('../assets/config.json')
+  const { authorization } = req.headers;
+  const identity = jwtDecode(authorization) as UserIdentity;
+  const config = require('../assets/config.json') as Config;
+
+  const [handle] = identity.unique_name.toLowerCase().split('@');
+  const context: Context = {
+    identity,
+    config,
+    handle,
   };
 
   let result = {
@@ -28,6 +35,11 @@ app.post('/', async (req, res) => {
   };
 
   try {
+
+    if (!await validateAccess(authorization, config)) {
+      throw new Error('Authentication invalid. Please login.');
+    }
+
     switch (command) {
       case Command.List:
         result.data = await psCommand(context, args, payload);

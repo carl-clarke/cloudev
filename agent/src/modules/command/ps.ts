@@ -10,10 +10,10 @@ export async function psCommand(context: Context, args: Lookup, payload: Lookup)
   // Validate before going any further.
   validateArgs(args, SUPPORTED_ARGS);
 
-  const { username } = context;
+  const { identity, handle } = context;
   const serialArgs = serializeArgs(args);
   const command = `docker ps ${serialArgs} \
-    --filter 'label=${ContainerMetadata.User}=${username}' \
+    --filter 'label=${ContainerMetadata.User}=${handle}' \
     --format '{{.Label "${ContainerMetadata.Name}"}}|{{.State}}|{{.RunningFor}}|{{.Image}}|{{.Label "${ContainerMetadata.Port}"}}'`;
 
   const raw = await execAsync(command);
@@ -38,7 +38,7 @@ export async function psCommand(context: Context, args: Lookup, payload: Lookup)
     });
 
   for (const item of results.filter(p => p.state === 'running')) {
-    const rawStats = await execAsync(`docker stats ${username}.${item.name} --no-stream --format '{{.MemUsage}}|{{.MemPerc}}'`);
+    const rawStats = await execAsync(`docker stats ${handle}.${item.name} --no-stream --format '{{.MemUsage}}|{{.MemPerc}}'`);
     const stats = rawStats
       .split('\n')
       .filter(p => p.trim().length > 0)

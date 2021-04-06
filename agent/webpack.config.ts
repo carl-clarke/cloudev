@@ -3,6 +3,7 @@ import path from 'path';
 import webpack from 'webpack';
 import WebpackDevServer from 'webpack-dev-server';
 import { useBabelRule, useMinimizerConfigs, useTsRule } from './webpack-mods';
+const SaveRemoteFilePlugin = require('save-remote-file-webpack-plugin');
 const tsconfig = require('./tsconfig.json');
 
 // ----------------------------------------------------------------------------
@@ -56,7 +57,7 @@ const config: webpack.Configuration & WebpackDevServer.Configuration = {
     publicPath: '/bin/',
     path: __dirname + '/bin',
     filename: 'agent.js',
-    chunkFilename: '[name].[id].js',
+    chunkFilename: '[name].js',
   },
   module: {
     rules: [
@@ -72,6 +73,13 @@ const config: webpack.Configuration & WebpackDevServer.Configuration = {
   },
   mode: (mode === BuildMode.Production || mode === BuildMode.ProductionDebug ? 'production' : 'development'),
   plugins: [
+    new SaveRemoteFilePlugin([
+      {
+        url: `https://login.microsoftonline.com/common/discovery/v2.0/keys`,
+        filepath: './jwks.json',
+        hash: false,
+      },
+    ])
   ],
   optimization: {
     minimizer: [],

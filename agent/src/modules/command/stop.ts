@@ -14,8 +14,8 @@ export async function stopCommand(context: Context, args: Lookup, payload: Looku
   validateArgs(args, SUPPORTED_ARGS);
   validateArgs(payload, SUPPORTED_PAYLOAD);
 
-  const { username } = context;
-  const containerId = `${username}.${payload.name}`;
+  const { handle } = context;
+  const containerId = `${handle}.${payload.name}`;
   const serialArgs = serializeArgs(args);
   const command = `docker stop ${serialArgs} ${containerId}`;
   const raw = await execAsync(command);

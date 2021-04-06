@@ -13,7 +13,7 @@ export async function createCommand(context: Context, args: Lookup, payload: Loo
   // Validate before going any further.
   validateArgs(args, SUPPORTED_ARGS);
 
-  const { username, config } = context;
+  const { handle, config } = context;
   const serialArgs = serializeArgs(args);
   const {
     IMAGE,
@@ -28,7 +28,7 @@ export async function createCommand(context: Context, args: Lookup, payload: Loo
     CONTAINER_CLOUD_DRIVE_MOUNT_PATH
   } = config;
 
-  const userDir = path.join(HOST_USERS_DIR_PATH, username);
+  const userDir = path.join(HOST_USERS_DIR_PATH, handle);
   const userDataDirPath = path.join(userDir, USER_DATA_DIR_NAME);
   const userKeysDirPath = path.join(userDir, USER_KEYS_DIR_NAME);
   const sshPrivateKeyPath = path.join(userKeysDirPath, USER_KEY_NAME)
@@ -37,19 +37,19 @@ export async function createCommand(context: Context, args: Lookup, payload: Loo
     port: getPort.makeRange(HOST_SSH_PORT_START, HOST_SSH_PORT_END)
   });
   const containerName = payload.name;
-  const containerId = `${username}.${containerName}`;
+  const containerId = `${handle}.${containerName}`;
 
   // Make user's "data" directory if it doesn't exist.
   if (!await fs.stat(userDataDirPath)) {
     mkdir('-p', userDataDirPath);
     chmod('', '777', userDataDirPath);
-    log(`✔️ Created ${username}/${USER_DATA_DIR_NAME}`)
+    log(`✔️ Created ${handle}/${USER_DATA_DIR_NAME}`)
   }
 
   // Make user's "keys" directory if it doesn't exist.
   if (!await fs.stat(userKeysDirPath)) {
     mkdir('-p', userKeysDirPath);
-    log(`✔️ Created ${username}/${USER_KEYS_DIR_NAME}`);
+    log(`✔️ Created ${handle}/${USER_KEYS_DIR_NAME}`);
   }
 
   // Generate keys
@@ -81,7 +81,7 @@ export async function createCommand(context: Context, args: Lookup, payload: Loo
         -p ${sshBindPort}:${CONTAINER_SSHD_PORT} \
         -v "${userDataDirPath}":"${CONTAINER_CLOUD_DRIVE_MOUNT_PATH}" \
         -v ${containerId}:"${CONTAINER_USER_DATA_MOUNT_PATH}" \
-        -l ${ContainerMetadata.User}=${username} \
+        -l ${ContainerMetadata.User}=${handle} \
         -l ${ContainerMetadata.Name}=${containerName} \
         -l ${ContainerMetadata.Port}=${sshBindPort} \
         ${IMAGE} \

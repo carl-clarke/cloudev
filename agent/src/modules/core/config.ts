@@ -9,4 +9,6 @@ export type Config = {
   CONTAINER_SSHD_PORT: string,
   CONTAINER_USER_DATA_MOUNT_PATH: string,
   CONTAINER_CLOUD_DRIVE_MOUNT_PATH: string,
+  AUTH_TENANT_ID: string,
+  AUTH_APP_ID: string,
 };
