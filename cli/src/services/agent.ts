@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import { AGENT_ENDPOINT, getToken } from '../modules/core';
 
 type AgentResponse<T> = {
   success: boolean;
@@ -29,12 +30,11 @@ export enum AgentContainerState {
   Exited = 'exited',
 }
 
-const AGENT_ENDPOINT = 'http://localhost:2020';
-
 const api = async <R>(payload: {}) => (await fetch(AGENT_ENDPOINT, {
   method: 'POST',
   headers: {
     'content-type': 'application/json',
+    Authorization: await getToken() ?? '',
   },
   body: JSON.stringify(payload),
 })).json() as Promise<AgentResponse<R>>;

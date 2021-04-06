@@ -27,10 +27,12 @@ export default class Remove extends Command {
 
     cli.action.start('Removing');
 
-    const { success } = await remove(name);
+    const { success, errors } = await remove(name);
 
     if (success) {
       await sshRemoveConfig(name);
+    } else {
+      this.log(errors.join('\n'));
     }
 
     cli.action.stop(`${success ? chalk.greenBright('done') : chalk.red('failed')}`);

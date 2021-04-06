@@ -28,21 +28,23 @@ export default class Create extends Command {
 
     cli.action.start(`Creating ${name}`);
 
-    const { success, data: { port, key } } = await create(name);
+    const { success, data: { port, key }, errors } = await create(name);
 
     cli.action.stop(`${success ? chalk.greenBright('done') : chalk.red('failed')}`);
 
     if (success) {
       const { host } = await sshAddConfig(name, key, port);
 
-      this.log(chalk.yellowBright('You will now be connected to the instance to choose a new password. Default password is "dev".'));
-      cli.wait(3000);
+      this.log(chalk.yellowBright('You will now be connected to the workspace to choose a new password. Default password is "dev".'));
+      await cli.wait(3000);
 
       shelljs.exec(`ssh -tt ${host}`);
 
       this.log(chalk.blue(`Open VSCode and use the Remote Explorer to connect to ${chalk.yellowBright(name)}`));
 
       // await cli.url('Open VSCode', `vscode://file/${name}.cloudev`);
+    } else {
+      this.log(errors.join('\n'));
     }
   }
 }

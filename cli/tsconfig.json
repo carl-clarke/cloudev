@@ -6,8 +6,9 @@
     "outDir": "lib",
     "rootDir": "src",
     "strict": true,
-    "target": "esnext",
-    "esModuleInterop": true
+    "target": "ES2017",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src/**/*"
