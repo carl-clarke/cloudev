@@ -1,7 +1,6 @@
 import { Command, flags } from '@oclif/command';
 import chalk from 'chalk';
 import cli from 'cli-ux';
-import shelljs from 'shelljs';
 import { sshAddConfig } from '../modules/core';
 import { create } from '../services/agent';
 export default class Create extends Command {
@@ -34,13 +33,17 @@ export default class Create extends Command {
 
     if (success) {
       const { host } = await sshAddConfig(name, key, port);
+      const accent = chalk.yellowBright;
 
-      this.log(chalk.yellowBright('You will now be connected to the workspace to choose a new password. Default password is "dev".'));
-      await cli.wait(3000);
+      this.log(accent('You\'re almost ready to go:'));
+      this.log(`1. Connect using the command ${accent(`ssh ${host}`)} and change the default password "${accent('dev')}"`);
+      this.log(`2. Open ${accent('VSCode')} and use the ${accent('Remote Explorer')} to access ${accent(host)}`);
+      
+      //You will now be connected to the workspace to choose a new password. Default password is "dev".'));
+      // await cli.wait(3000);
 
-      shelljs.exec(`ssh -tt ${host}`);
+      // shelljs.exec(`ssh -tt ${host}`);
 
-      this.log(chalk.blue(`Open VSCode and use the Remote Explorer to connect to ${chalk.yellowBright(name)}`));
 
       // await cli.url('Open VSCode', `vscode://file/${name}.cloudev`);
     } else {

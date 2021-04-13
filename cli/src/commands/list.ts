@@ -27,13 +27,20 @@ export default class List extends Command {
     cli.action.stop(`${success ? chalk.greenBright('done') : chalk.red('failed')}`);
 
     if (success) {
-      results
-      .sort((a, b) => a.state === AgentContainerState.Running ? -1 : 1)
-      .forEach(p => {
-        const isRunning = p.state === AgentContainerState.Running;
-        const { usage, percentage } = p.memory;
+      const data = results
+        .sort((a, b) => a.state === AgentContainerState.Running ? -1 : 1);
 
-        this.log(`${isRunning ? '🟢' : '⭕'} ${p.name}\t${isRunning ? 'Online' : 'Offline'}\t${usage && `\t${usage} (${percentage})`}`);
+      cli.table(data, {
+        status: {
+          minWidth: 10,
+          get: p => p.state === AgentContainerState.Running ? '🟢 Up' : '⭕ Down'
+        },
+        name: {
+          minWidth: 15
+        },
+        memory: {
+          get: ({ memory }) => `${memory.usage} (${memory.percentage})`
+        }
       });
     } else {
       this.log(errors.join('\n'));

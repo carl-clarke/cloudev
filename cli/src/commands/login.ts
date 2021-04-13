@@ -28,30 +28,31 @@ export default class Login extends Command {
   async run() {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { args, flags } = this.parse(Login);
-    const clientId = CLIENT_ID;
-    const port = await getPort({ port: 2021 });
+    const port = await getPort();
+    let success = false;
 
     cli.action.start('Opening your browser to sign into your Microsoft account');
     await cli.wait(2000);
 
-    open(`https://login.microsoftonline.com/common/oauth2/authorize\
-    ?client_id=${clientId}\
-    &redirect_uri=http://localhost:${port}\
-    &response_type=id_token\
-    &scope=openid profile\
-    &response_mode=form_post\
-    &nonce=${nonce()}\
-    &prompt=none
+    try {
+      await open(`https://login.microsoftonline.com/common/oauth2/authorize\
+?client_id=${CLIENT_ID}\
+&redirect_uri=http://localhost:${port}\
+&response_type=id_token\
+&scope=openid profile\
+&response_mode=form_post\
+&nonce=${nonce()}\
+&prompt=select_account
     `);
 
-    let success = false;
-
-    try {
       const { id_token: idToken } = await this.startServer(port);
       await saveToken(idToken);
 
       success = true;
-    } catch { }
+    } catch (e) {
+      console.log(e);
+      cli.anykey();
+    }
 
     cli.action.stop();
 
