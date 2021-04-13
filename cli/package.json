@@ -1,7 +1,7 @@
 {
   "name": "cloudev",
   "description": "Cloud DEV environments, automated!",
-  "version": "0.0.0",
+  "version": "0.1.6",
   "author": "Carl Clarke @carl-clarke",
   "bin": {
     "cloudev": "./bin/run"
@@ -12,6 +12,7 @@
     "@oclif/config": "^1.17.0",
     "@oclif/plugin-help": "^3.2.2",
     "chalk": "^4.1.0",
+    "cli-ux": "^5.5.1",
     "get-port": "^5.1.1",
     "jwt-decode": "^3.1.2",
     "node-fetch": "^2.6.1",
@@ -64,6 +65,7 @@
   },
   "repository": "carl-clarke/cloudev",
   "scripts": {
+    "prepublishOnly": "npm version patch --force",
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
     "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",

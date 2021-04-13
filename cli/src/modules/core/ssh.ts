@@ -7,14 +7,14 @@ import { SSH_CONFIG_HOST_SUFFIX, SSH_DIR_PERMISSION, SSH_KEY_PERMISSION } from '
 const sshConfig = require('ssh-config');
 const userHomeDir = homedir();
 const sshDir = path.join(userHomeDir, '.ssh');
-const keysDir = path.join(sshDir, `${SSH_CONFIG_HOST_SUFFIX}/`);
+const keysDir = path.join(sshDir, `.${SSH_CONFIG_HOST_SUFFIX}/`);
 const configFile = path.join(sshDir, 'config');
 const configFileBackup = `${configFile}.bak`;
 
 export async function sshAddConfig(name: any, key: string, port: number) {
-  const configFileRaw = (await fs.readFile(configFile).catch(p => '')).toString();
+  const configFileRaw = (await fs.readFile(configFile).catch(() => '')).toString();
   const config = sshConfig.parse(configFileRaw);
-  const newHostName = `${name}${SSH_CONFIG_HOST_SUFFIX}`;
+  const newHostName = `${name}.${SSH_CONFIG_HOST_SUFFIX}`;
   const host = await getHost();
   const keyFile = path.join(keysDir, name);
 
@@ -47,11 +47,11 @@ User dev`;
 }
 
 export async function sshRemoveConfig(name: any) {
-  const configFileRaw = (await fs.readFile(configFile).catch(p => '')).toString();
+  const configFileRaw = (await fs.readFile(configFile).catch(() => '')).toString();
 
   if (configFileRaw.trim() !== '') {
     const config = sshConfig.parse(configFileRaw);
-    const existingHostName = `${name}${SSH_CONFIG_HOST_SUFFIX}`;
+    const existingHostName = `${name}.${SSH_CONFIG_HOST_SUFFIX}`;
     const keyFile = path.join(keysDir, name);
 
     try {

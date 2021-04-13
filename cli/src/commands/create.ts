@@ -4,7 +4,7 @@ import cli from 'cli-ux';
 import { sshAddConfig } from '../modules/core';
 import { create } from '../services/agent';
 export default class Create extends Command {
-  static description = 'Stop an active workspace. Can be restarted later to pickup where you left off.'
+  static description = 'Create a new DEV workspace.'
 
   static aliases = [];
 

@@ -3,7 +3,7 @@ import chalk from 'chalk';
 import cli from 'cli-ux';
 import { stop } from '../services/agent';
 
-export default class Start extends Command {
+export default class Stop extends Command {
   static description = 'Stop an active workspace. Can be restarted later to pickup where you left off.'
 
   static aliases = [];
@@ -21,7 +21,7 @@ export default class Start extends Command {
   static args = [{ name: 'name' }];
 
   async run() {
-    const { args } = this.parse(Start);
+    const { args } = this.parse(Stop);
 
     cli.action.start('Stopping');
 
