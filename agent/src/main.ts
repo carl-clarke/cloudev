@@ -16,6 +16,7 @@ app.use(express.json({}));
 // Routes
 // ----------------------------------------------------------------------------
 app.post('/', async (req, res) => {
+  console.log({ request: req.body });
   const { command, args = {}, payload = {} } = req.body;
   const { authorization } = req.headers;
   const identity = jwtDecode(authorization) as UserIdentity;
@@ -61,6 +62,7 @@ app.post('/', async (req, res) => {
     }
   }
   catch (e) {
+    logError(e);
     result.success = false;
     result.errors.push(e.toString());
   }

@@ -109,6 +109,8 @@ RUN mkdir .ssh; \
     touch .ssh/authorized_keys; \
     chmod 600 .ssh/authorized_keys
 
+RUN touch .hushlogin
+
 # Done with DEV; switch back to ROOT
 USER root
 

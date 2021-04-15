@@ -8,7 +8,7 @@ const SUPPORTED_ARGS = {
 };
 
 export async function createCommand(context: Context, args: Lookup, payload: Lookup) {
-  log('[Command:PS] invoked with args', args);
+  log('[Command:create] invoked with args', args);
 
   // Validate before going any further.
   validateArgs(args, SUPPORTED_ARGS);
@@ -25,7 +25,9 @@ export async function createCommand(context: Context, args: Lookup, payload: Loo
     HOST_SSH_PORT_END,
     CONTAINER_SSHD_PORT,
     CONTAINER_USER_DATA_MOUNT_PATH,
-    CONTAINER_CLOUD_DRIVE_MOUNT_PATH
+    CONTAINER_CLOUD_DRIVE_MOUNT_PATH,
+    CONTAINER_MEMORY_UPPER_MB,
+    CONTAINER_MEMORY_LOWER_MB
   } = config;
 
   const userDir = path.join(HOST_USERS_DIR_PATH, handle);
@@ -40,28 +42,29 @@ export async function createCommand(context: Context, args: Lookup, payload: Loo
   const containerId = `${handle}.${containerName}`;
 
   // Make user's "data" directory if it doesn't exist.
-  if (!await fs.stat(userDataDirPath)) {
-    mkdir('-p', userDataDirPath);
-    chmod('', '777', userDataDirPath);
-    log(`✔️ Created ${handle}/${USER_DATA_DIR_NAME}`)
+  if (!await fs.stat(userDataDirPath).catch(p => false)) {
+    log(mkdir('-p', userDataDirPath));
+    log(chmod('-R', '777', userDataDirPath));
+    log(`✔️ Created ${handle}/${USER_DATA_DIR_NAME} directory.`)
   }
 
   // Make user's "keys" directory if it doesn't exist.
-  if (!await fs.stat(userKeysDirPath)) {
-    mkdir('-p', userKeysDirPath);
-    log(`✔️ Created ${handle}/${USER_KEYS_DIR_NAME}`);
+  if (!await fs.stat(userKeysDirPath).catch(p => false)) {
+    log(mkdir('-p', userKeysDirPath));
+    log(`✔️ Created ${handle}/${USER_KEYS_DIR_NAME} directory.`);
   }
 
   // Generate keys
-  if (!fs.stat(sshPrivateKeyPath)) {
-    await execAsync(`ssh - keygen - q - t rsa - b 4096 - P "" - f ${sshPrivateKeyPath}`);
+  if (!await fs.stat(sshPrivateKeyPath).catch(p => false)) {
+    log(`Generating SSH key-pairs`);
+    await execAsync(`ssh-keygen -q -t rsa -b 4096 -P "" -f ${sshPrivateKeyPath}`);
     log(`✔️ Generated new key ${USER_KEYS_DIR_NAME}/${USER_KEY_NAME}`)
   }
 
   // Must be initialized after keys are generated.
   const sshPubKeyValue = (await fs.readFile(sshPubKeyPath)).toString();
   const sshPrivateKeyValue = (await fs.readFile(sshPrivateKeyPath)).toString();
-  
+
   if (await execAsync(`docker volume ls -f 'name=${containerId}' --format '{{.Name}}'`) === '') {
     log('Creating volume...')
     await execAsync(`docker volume create ${containerId} 1> /dev/null`);
@@ -71,22 +74,27 @@ export async function createCommand(context: Context, args: Lookup, payload: Loo
   if (await execAsync(`docker ps -a -q -f 'name=${containerId}' --format '{{.Names}}'`) === '') {
     log('  Creating container...');
     
-    await execAsync(`\
-      docker run \
-        -itd \
-        --runtime=sysbox-runc \
-        --restart always \
-        --name "${containerId}" \
-        -e SSH_PUBKEYS="${sshPubKeyValue}" \
-        -p ${sshBindPort}:${CONTAINER_SSHD_PORT} \
-        -v "${userDataDirPath}":"${CONTAINER_CLOUD_DRIVE_MOUNT_PATH}" \
-        -v ${containerId}:"${CONTAINER_USER_DATA_MOUNT_PATH}" \
-        -l ${ContainerMetadata.User}=${handle} \
-        -l ${ContainerMetadata.Name}=${containerName} \
-        -l ${ContainerMetadata.Port}=${sshBindPort} \
-        ${IMAGE} \
-        1> /dev/null
-    `);
+    const dockerCmd = `\
+    docker run \
+      -itd \
+      --runtime=sysbox-runc \
+      --restart always \
+      --name "${containerId}" \
+      --memory ${CONTAINER_MEMORY_UPPER_MB}m \
+      --memory-reservation ${CONTAINER_MEMORY_LOWER_MB}m \
+      -e SSH_PUBKEYS="${sshPubKeyValue}" \
+      -p ${sshBindPort}:${CONTAINER_SSHD_PORT} \
+      -v "${userDataDirPath}":"${CONTAINER_CLOUD_DRIVE_MOUNT_PATH}" \
+      -v ${containerId}:"${CONTAINER_USER_DATA_MOUNT_PATH}" \
+      -l ${ContainerMetadata.User}=${handle} \
+      -l ${ContainerMetadata.Name}=${containerName} \
+      -l ${ContainerMetadata.Port}=${sshBindPort} \
+      ${IMAGE}
+  `;
+
+    const dockerOutput = await execAsync(dockerCmd);
+    
+    log(dockerOutput);
     log(`✔️ Container started at port ${sshBindPort}`);
   }
   else {
