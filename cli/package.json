@@ -1,7 +1,7 @@
 {
   "name": "cloudev",
   "description": "Cloud DEV environments, automated!",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "author": "Carl Clarke @carl-clarke",
   "bin": {
     "cloudev": "./bin/run"

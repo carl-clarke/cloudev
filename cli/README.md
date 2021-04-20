@@ -20,7 +20,7 @@ $ npm install -g cloudev
 $ cloudev COMMAND
 running command...
 $ cloudev (-v|--version|version)
-cloudev/0.1.6 linux-x64 node-v14.16.1
+cloudev/0.1.8 linux-x64 node-v14.16.1
 $ cloudev --help [COMMAND]
 USAGE
   $ cloudev COMMAND
@@ -57,7 +57,7 @@ EXAMPLE
   $ cloudev backup <name> <description>
 ```
 
-_See code: [src/commands/backup.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.6/src/commands/backup.ts)_
+_See code: [src/commands/backup.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.8/src/commands/backup.ts)_
 
 ## `cloudev clone [NAME]`
 
@@ -74,7 +74,7 @@ EXAMPLE
   $ cloudev clone <name>
 ```
 
-_See code: [src/commands/clone.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.6/src/commands/clone.ts)_
+_See code: [src/commands/clone.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.8/src/commands/clone.ts)_
 
 ## `cloudev create [NAME]`
 
@@ -91,7 +91,7 @@ EXAMPLE
   $ cloudev stop <name>
 ```
 
-_See code: [src/commands/create.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.6/src/commands/create.ts)_
+_See code: [src/commands/create.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.8/src/commands/create.ts)_
 
 ## `cloudev help [COMMAND]`
 
@@ -125,7 +125,7 @@ ALIASES
   $ cloudev ls
 ```
 
-_See code: [src/commands/list.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.6/src/commands/list.ts)_
+_See code: [src/commands/list.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.8/src/commands/list.ts)_
 
 ## `cloudev login`
 
@@ -142,7 +142,7 @@ EXAMPLE
   $ cloudev login
 ```
 
-_See code: [src/commands/login.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.6/src/commands/login.ts)_
+_See code: [src/commands/login.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.8/src/commands/login.ts)_
 
 ## `cloudev logout [NAME]`
 
@@ -159,7 +159,7 @@ EXAMPLE
   $ cloudev logout
 ```
 
-_See code: [src/commands/logout.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.6/src/commands/logout.ts)_
+_See code: [src/commands/logout.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.8/src/commands/logout.ts)_
 
 ## `cloudev remove [NAME]`
 
@@ -179,7 +179,7 @@ EXAMPLE
   $ cloudev remove <name>
 ```
 
-_See code: [src/commands/remove.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.6/src/commands/remove.ts)_
+_See code: [src/commands/remove.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.8/src/commands/remove.ts)_
 
 ## `cloudev restore [NAME]`
 
@@ -196,7 +196,7 @@ EXAMPLE
   $ cloudev restore <name>
 ```
 
-_See code: [src/commands/restore.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.6/src/commands/restore.ts)_
+_See code: [src/commands/restore.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.8/src/commands/restore.ts)_
 
 ## `cloudev share [NAME] [RECIPIENT]`
 
@@ -213,7 +213,7 @@ EXAMPLE
   $ cloudev share <name> <recipient>
 ```
 
-_See code: [src/commands/share.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.6/src/commands/share.ts)_
+_See code: [src/commands/share.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.8/src/commands/share.ts)_
 
 ## `cloudev start [NAME]`
 
@@ -230,7 +230,7 @@ EXAMPLE
   $ cloudev start <name>
 ```
 
-_See code: [src/commands/start.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.6/src/commands/start.ts)_
+_See code: [src/commands/start.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.8/src/commands/start.ts)_
 
 ## `cloudev stop [NAME]`
 
@@ -247,5 +247,5 @@ EXAMPLE
   $ cloudev stop <name>
 ```
 
-_See code: [src/commands/stop.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.6/src/commands/stop.ts)_
+_See code: [src/commands/stop.ts](https://github.com/carl-clarke/cloudev/blob/v0.1.8/src/commands/stop.ts)_
 <!-- commandsstop -->
